@@ -23,8 +23,8 @@ exports.handler = (event, context, callback) => {
             break;
         case 'POST':
             const body = JSON.parse(event.body);
-            console.log("POST value = " + body.key);
-            done(null, "POST Hello, world!\n" + body.key);
+            console.log("POST " + body.key);
+            done(null, "POST " + body.key);
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
