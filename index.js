@@ -25,9 +25,11 @@ exports.handler = (event, context, callback) => {
             process.env.HOME = process.cwd();
             process.env.PATH = process.cwd() + "/bin:" + process.env.PATH;
             console.log(process.env.PATH);
-            const brew = spawn("brew/bin/brew", ["config"]);
-            console.log(brew.stderr.toString() + brew.stdout.toString());
-            done(null, brew.stderr.toString() + brew.stdout.toString());
+            const brew_config = spawn("brew/bin/brew", ["config"]);
+            console.log(brew_config.stderr.toString() + brew_config.stdout.toString());
+            const brew_pull_circle = spawn("brew/bin/brew", ["pull-circle", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]);
+            console.log(brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
+            done(null, brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
             break;
         case 'POST':
             const body = JSON.parse(event.body);
