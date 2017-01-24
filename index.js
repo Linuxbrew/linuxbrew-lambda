@@ -25,9 +25,12 @@ function processEvent(event, context, callback) {
             const spawn = require("child_process").spawnSync;
             const ruby = spawn("bin/ruby", ["-e", "puts(123+456)"]);
             console.log(ruby.stderr.toString() + ruby.stdout.toString());
+            process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
+            process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
             process.env.HOME = "/tmp";
-            process.env.PATH = process.cwd() + "/bin:" + process.env.PATH;
+            process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
             console.log("PATH=" + process.env.PATH);
+            spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
             spawn("cp", ["-a", "brew", "/tmp/"]);
             process.chdir("/tmp");
             const brew_config = spawn("/tmp/brew/bin/brew", ["config"]);
