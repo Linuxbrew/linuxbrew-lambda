@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+echo GCC is not installed. >&2
+false
