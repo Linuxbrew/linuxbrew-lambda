@@ -22,7 +22,12 @@ exports.handler = (event, context, callback) => {
             const spawn = require("child_process").spawnSync;
             const ruby = spawn("bin/ruby", ["-e", "puts(123+456)"]);
             console.log(ruby.stderr.toString() + ruby.stdout.toString());
-            done(null, ruby.stderr.toString() + ruby.stdout.toString());
+
+            process.env.PATH = process.cwd() + "/bin:" + process.env.PATH;
+            console.log(process.env.PATH);
+            const brew = spawn("brew/bin/brew", ["config"]);
+            console.log(brew.stderr.toString() + brew.stdout.toString());
+            done(null, brew.stderr.toString() + brew.stdout.toString());
             break;
         case 'POST':
             const body = JSON.parse(event.body);
