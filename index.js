@@ -1,9 +1,16 @@
 'use strict';
 
-console.log('Loading function');
-
 const AWS = require('aws-sdk');
+const fs = require('fs');
+const spawnSync = require("child_process").spawnSync;
 let decrypted;
+
+function spawn(command, args) {
+    const output = spawnSync(command, args);
+    const s = output.stdout.toString() + output.stderr.toString();
+    console.log(s);
+    return s;
+}
 
 /**
  * Transfer bottles from CircleCI to BinTray and GitHub
@@ -21,24 +28,17 @@ function processEvent(event, context, callback) {
 
     switch (event.httpMethod) {
         case 'GET':
-            console.log("GET Hello, world!");
-            const spawn = require("child_process").spawnSync;
-            const ruby = spawn("bin/ruby", ["-e", "puts(123+456)"]);
-            console.log(ruby.stderr.toString() + ruby.stdout.toString());
-            process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
             process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
+            process.env.GIT_SSH_COMMAND = "/var/task/usr/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
+            process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
             process.env.HOME = "/tmp";
             process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
             process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
-            console.log("PATH=" + process.env.PATH);
-            spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
             spawn("cp", ["-a", "brew", "/tmp/"]);
+            spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
             process.chdir("/tmp");
-            const brew_config = spawn("/tmp/brew/bin/brew", ["config"]);
-            console.log(brew_config.stderr.toString() + brew_config.stdout.toString());
-            const brew_pull_circle = spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]);
-            console.log(brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
-            done(null, brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
+            done(null, spawn("/tmp/brew/bin/brew",
+                ["pull-circle", "--ci-upload", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]));
             break;
         case 'POST':
             const body = JSON.parse(event.body);
@@ -63,7 +63,18 @@ exports.handler = (event, context, callback) => {
                 return callback(err);
             }
             process.env.BINTRAY_KEY = data.Plaintext.toString('ascii');
-            processEvent(event, context, callback);
+            kms.decrypt({ CiphertextBlob: new Buffer(process.env.ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
+                if (err) {
+                    console.log('Decrypt error:', err);
+                    return callback(err);
+                }
+                fs.mkdirSync("/tmp/.ssh", 0o700);
+                fs.writeFileSync("/tmp/.ssh/id_rsa",
+                    data.Plaintext.toString('ascii'),
+                    { mode: 0o600 });
+                decrypted = true;
+                processEvent(event, context, callback);
+            });
         });
     }
 };
