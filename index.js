@@ -12,6 +12,18 @@ function spawn(command, args) {
     return s;
 }
 
+function install_linuxbrew() {
+    spawn("cp", ["-a", "brew", "/tmp/"]);
+    spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
+    process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
+    process.env.GIT_SSH_COMMAND = "/var/task/usr/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
+    process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
+    process.env.HOME = "/tmp";
+    process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
+    process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
+    process.chdir("/tmp");
+}
+
 /**
  * Transfer bottles from CircleCI to BinTray and GitHub
  */
@@ -28,22 +40,15 @@ function processEvent(event, context, callback) {
 
     switch (event.httpMethod) {
         case 'GET':
-            process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
-            process.env.GIT_SSH_COMMAND = "/var/task/usr/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
-            process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
-            process.env.HOME = "/tmp";
-            process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
-            process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
-            spawn("cp", ["-a", "brew", "/tmp/"]);
-            spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
-            process.chdir("/tmp");
-            done(null, spawn("/tmp/brew/bin/brew",
-                ["pull-circle", "--ci-upload", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]));
+            install_linuxbrew();
+            done(null, spawn("/tmp/brew/bin/brew", ["config"]));
             break;
         case 'POST':
             const body = JSON.parse(event.body);
-            console.log("POST " + body.key);
-            done(null, "POST " + body.key);
+            const pr = body.payload.pull_requests[0].url;
+            console.log("Pull request URL: " + pr);
+            install_linuxbrew();
+            done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", pr]));
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
