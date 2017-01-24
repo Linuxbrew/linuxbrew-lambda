@@ -36,7 +36,7 @@ openssh-7.4p1/stamp: openssh-7.4p1.tar.gz
 openssh-7.4p1/ssh: openssh-7.4p1/stamp
 	cd $(@D) && ./configure --prefix=/tmp/usr && make
 	
-linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib usr
+linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib
 	zip -qr $@ $^
 
 linuxbrew-lambda.zip.json: linuxbrew-lambda.zip

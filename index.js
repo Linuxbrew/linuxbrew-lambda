@@ -16,7 +16,7 @@ function install_linuxbrew() {
     spawn("cp", ["-a", "brew", "/tmp/"]);
     spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
     process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
-    process.env.GIT_SSH_COMMAND = "/var/task/usr/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
+    process.env.GIT_SSH_COMMAND = "/var/task/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
     process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
     process.env.HOME = "/tmp";
     process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
