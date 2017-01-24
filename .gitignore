@@ -2,9 +2,10 @@ bin
 bin.real
 brew
 brew-stamp
+git-2.4.3.tar
 info
 lib
 linuxbrew-lambda.zip
 ruby-stamp
-usr
 traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
+usr
