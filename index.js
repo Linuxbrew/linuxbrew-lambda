@@ -29,7 +29,7 @@ exports.handler = (event, context, callback) => {
             process.chdir("/tmp");
             const brew_config = spawn("/tmp/brew/bin/brew", ["config"]);
             console.log(brew_config.stderr.toString() + brew_config.stdout.toString());
-            const brew_pull_circle = spawn("/tmp/brew/bin/brew", ["pull-circle", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]);
+            const brew_pull_circle = spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", "https://github.com/Linuxbrew/homebrew-extra/pull/2"]);
             console.log(brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
             done(null, brew_pull_circle.stderr.toString() + brew_pull_circle.stdout.toString());
             break;
