@@ -28,6 +28,7 @@ function processEvent(event, context, callback) {
             process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
             process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
             process.env.HOME = "/tmp";
+            process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
             process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
             console.log("PATH=" + process.env.PATH);
             spawn("tar", ["xf", "git-2.4.3.tar", "-C", "/tmp"]);
