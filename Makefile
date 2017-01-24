@@ -1,5 +1,7 @@
 all: linuxbrew-lambda.zip
 
+deploy: linuxbrew-lambda.zip.json
+
 git-2.4.3.tar:
 	curl -O https://raw.githubusercontent.com/lambci/lambci/master/vendor/git-2.4.3.tar
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
@@ -36,3 +38,6 @@ openssh-7.4p1/ssh: openssh-7.4p1/stamp
 	
 linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib usr
 	zip -qr $@ $^
+
+linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
+	aws lambda update-function-code --function-name LinuxbrewTestBot --zip-file fileb://$< >$@
