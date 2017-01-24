@@ -2,10 +2,13 @@
 
 console.log('Loading function');
 
+const AWS = require('aws-sdk');
+let decrypted;
+
 /**
  * Transfer bottles from CircleCI to BinTray and GitHub
  */
-exports.handler = (event, context, callback) => {
+function processEvent(event, context, callback) {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
     const done = (err, res) => callback(null, {
@@ -40,5 +43,23 @@ exports.handler = (event, context, callback) => {
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
+    }
+};
+
+exports.handler = (event, context, callback) => {
+    if (decrypted) {
+        processEvent(event, context, callback);
+    } else {
+        // Decrypt code should run once and variables stored outside of the function
+        // handler so that these are decrypted once per container
+        const kms = new AWS.KMS();
+        kms.decrypt({ CiphertextBlob: new Buffer(process.env.BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
+            if (err) {
+                console.log('Decrypt error:', err);
+                return callback(err);
+            }
+            process.env.BINTRAY_KEY = data.Plaintext.toString('ascii');
+            processEvent(event, context, callback);
+        });
     }
 };
