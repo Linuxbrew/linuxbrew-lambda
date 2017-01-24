@@ -19,7 +19,10 @@ exports.handler = (event, context, callback) => {
     switch (event.httpMethod) {
         case 'GET':
             console.log("GET Hello, world!");
-            done(null, "GET Hello, world!");
+            const spawn = require("child_process").spawnSync;
+            const ruby = spawn("bin/ruby", ["-e", "puts(123+456)"]);
+            console.log(ruby.stderr.toString() + ruby.stdout.toString());
+            done(null, ruby.stderr.toString() + ruby.stdout.toString());
             break;
         case 'POST':
             const body = JSON.parse(event.body);
