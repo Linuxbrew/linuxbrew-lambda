@@ -41,3 +41,6 @@ linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.
 
 linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
 	aws lambda update-function-code --function-name LinuxbrewTestBot --zip-file fileb://$< >$@
+
+linuxbrew-lambda.test.output.json: linuxbrew-lambda.test.json
+	curl -d@$< https://p4142ivuwk.execute-api.us-west-2.amazonaws.com/prod/LinuxbrewTestBot >$@
