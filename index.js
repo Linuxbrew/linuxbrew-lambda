@@ -73,7 +73,8 @@ exports.handler = (event, context, callback) => {
                     console.log('Decrypt error:', err);
                     return callback(err);
                 }
-                fs.mkdirSync("/tmp/.ssh", 0o700);
+                if (!fs.existsSync("/tmp/.ssh"))
+                    fs.mkdirSync("/tmp/.ssh", 0o700);
                 fs.writeFileSync("/tmp/.ssh/id_rsa",
                     data.Plaintext.toString('ascii'),
                     { mode: 0o600 });
