@@ -3,7 +3,6 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const spawnSync = require("child_process").spawnSync;
-let decrypted;
 
 function spawn(command, args) {
     const output = spawnSync(command, args);
@@ -62,11 +61,9 @@ function processEvent(event, context, callback) {
 };
 
 exports.handler = (event, context, callback) => {
-    if (decrypted) {
+    if (fs.existsSync('/tmp/.ssh/id_rsa')) {
         processEvent(event, context, callback);
     } else {
-        // Decrypt code should run once and variables stored outside of the function
-        // handler so that these are decrypted once per container
         const kms = new AWS.KMS();
         kms.decrypt({ CiphertextBlob: new Buffer(process.env.BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
             if (err) {
@@ -79,12 +76,10 @@ exports.handler = (event, context, callback) => {
                     console.log('Decrypt error:', err);
                     return callback(err);
                 }
-                if (!fs.existsSync("/tmp/.ssh"))
-                    fs.mkdirSync("/tmp/.ssh", 0o700);
-                fs.writeFileSync("/tmp/.ssh/id_rsa",
+                fs.mkdirSync('/tmp/.ssh', 0o700);
+                fs.writeFileSync('/tmp/.ssh/id_rsa',
                     data.Plaintext.toString('ascii'),
                     { mode: 0o600 });
-                decrypted = true;
                 processEvent(event, context, callback);
             });
         });
