@@ -12,7 +12,7 @@ function spawn(command, args) {
         return output.error.toString();
     }
     const s = output.stdout.toString() + output.stderr.toString();
-    console.log(s);
+    console.log(command, args, s);
     return s;
 }
 
