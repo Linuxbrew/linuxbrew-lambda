@@ -55,6 +55,10 @@ function processEvent(event, context, callback) {
             const pr = body.payload.pull_requests[0].url;
             console.log("Pull request URL: " + pr);
             install_linuxbrew();
+            process.env.HOMEBREW_DEVELOPER = "1";
+            process.env.HOMEBREW_NO_ANALYTICS = "1";
+            process.env.HOMEBREW_NO_AUTO_UPDATE = "1";
+            process.env.HOMEBREW_VERBOSE = "1";
             const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
             done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr]));
             break;
