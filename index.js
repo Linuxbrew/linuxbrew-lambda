@@ -17,6 +17,8 @@ function spawn(command, args) {
 }
 
 function install_linuxbrew() {
+    if (fs.existsSync('/tmp/brew'))
+        return;
     spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
     spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
     process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
