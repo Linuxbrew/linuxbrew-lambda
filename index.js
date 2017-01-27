@@ -5,7 +5,8 @@ const fs = require('fs');
 const spawnSync = require("child_process").spawnSync;
 
 function spawn(command, args) {
-    const output = spawnSync(command, args);
+    const output = spawnSync(command,
+        args.filter(function(x) { return x != null }));
     if (output.error != null) {
         console.log(output);
         return output.error.toString();
@@ -43,6 +44,7 @@ function processEvent(event, context, callback) {
         },
     });
 
+    const q = event.queryStringParameters;
     switch (event.httpMethod) {
         case 'GET':
             install_linuxbrew();
@@ -53,7 +55,8 @@ function processEvent(event, context, callback) {
             const pr = body.payload.pull_requests[0].url;
             console.log("Pull request URL: " + pr);
             install_linuxbrew();
-            done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", pr]));
+            const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
+            done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr]));
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
