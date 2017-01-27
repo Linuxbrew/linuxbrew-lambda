@@ -5,6 +5,7 @@ brew-stamp
 git-2.4.3.tar
 info
 lib
+linuxbrew-lambda.test.output.json
 linuxbrew-lambda.zip
 linuxbrew-lambda.zip.json
 openssh-7.4p1
