@@ -46,4 +46,4 @@ linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
 	aws lambda update-function-code --function-name LinuxbrewTestBot --zip-file fileb://$< >$@
 
 linuxbrew-lambda.test.output.json: linuxbrew-lambda.test.json
-	curl -d@$< https://p4142ivuwk.execute-api.us-west-2.amazonaws.com/prod/LinuxbrewTestBot >$@
+	curl -d@$< https://p4142ivuwk.execute-api.us-west-2.amazonaws.com/prod/LinuxbrewTestBot?keep-old=1 >$@
