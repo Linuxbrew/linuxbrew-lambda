@@ -7,6 +7,10 @@ let decrypted;
 
 function spawn(command, args) {
     const output = spawnSync(command, args);
+    if (output.error != null) {
+        console.log(output);
+        return output.error.toString();
+    }
     const s = output.stdout.toString() + output.stderr.toString();
     console.log(s);
     return s;
