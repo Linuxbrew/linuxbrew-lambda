@@ -17,10 +17,6 @@ function spawn(command, args) {
 }
 
 function install_linuxbrew() {
-    if (fs.existsSync('/tmp/brew'))
-        return;
-    spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
-    spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
     process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
     process.env.GIT_SSH_COMMAND = "/var/task/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
     process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
@@ -28,6 +24,10 @@ function install_linuxbrew() {
     process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
     process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
     process.chdir("/tmp");
+    if (fs.existsSync('/tmp/brew'))
+        return;
+    spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
+    spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
 }
 
 /**
@@ -68,27 +68,28 @@ function processEvent(event, context, callback) {
 };
 
 exports.handler = (event, context, callback) => {
-    if (fs.existsSync('/tmp/.ssh/id_rsa')) {
-        processEvent(event, context, callback);
-    } else {
-        const kms = new AWS.KMS();
-        kms.decrypt({ CiphertextBlob: new Buffer(process.env.BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
+    if ('BINTRAY_KEY' in process.env)
+        return processEvent(event, context, callback);
+    const kms = new AWS.KMS();
+    kms.decrypt({ CiphertextBlob: new Buffer(process.env.BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
+        if (err) {
+            console.log('Decrypt error:', err);
+            return callback(err);
+        }
+        process.env.BINTRAY_KEY = data.Plaintext.toString('ascii');
+
+        if (fs.existsSync('/tmp/.ssh/id_rsa'))
+            return processEvent(event, context, callback);
+        kms.decrypt({ CiphertextBlob: new Buffer(process.env.ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
             if (err) {
                 console.log('Decrypt error:', err);
                 return callback(err);
             }
-            process.env.BINTRAY_KEY = data.Plaintext.toString('ascii');
-            kms.decrypt({ CiphertextBlob: new Buffer(process.env.ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
-                if (err) {
-                    console.log('Decrypt error:', err);
-                    return callback(err);
-                }
-                fs.mkdirSync('/tmp/.ssh', 0o700);
-                fs.writeFileSync('/tmp/.ssh/id_rsa',
-                    data.Plaintext.toString('ascii'),
-                    { mode: 0o600 });
-                processEvent(event, context, callback);
-            });
+            fs.mkdirSync('/tmp/.ssh', 0o700);
+            fs.writeFileSync('/tmp/.ssh/id_rsa',
+                data.Plaintext.toString('ascii'),
+                { mode: 0o600 });
+            processEvent(event, context, callback);
         });
-    }
+    });
 };
