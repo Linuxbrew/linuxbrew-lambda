@@ -33,6 +33,7 @@ function install_linuxbrew() {
         return;
     spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
     spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
+    spawn("/tmp/brew/bin/brew", ["update"]);
 }
 
 /**
