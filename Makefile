@@ -6,10 +6,6 @@ git-2.4.3.tar:
 	curl -O https://raw.githubusercontent.com/lambci/lambci/master/vendor/git-2.4.3.tar
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
 
-openssh-7.4p1.tar.gz:
-	curl -O http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.4p1.tar.gz
-	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
-
 traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz:
 	curl -O http://d6r77u77i8pq3.cloudfront.net/releases/traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
@@ -29,16 +25,6 @@ ruby-stamp: traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
 	tar xf $<
 	touch $@
 
-# Patch openssh so that seteuid failing is not fatal.
-# See https://github.com/lambci/lambci/issues/26
-openssh-7.4p1/stamp: openssh-7.4p1.tar.gz
-	tar xf $<
-	sed -i.orig 's/fatal/printf/' $(@D)/sshconnect.h
-	touch $@
-
-openssh-7.4p1/ssh: openssh-7.4p1/stamp
-	cd $(@D) && ./configure --prefix=/tmp/usr && make
-	
 linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib
 	zip -qr $@ $^
 
