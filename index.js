@@ -20,10 +20,15 @@ function install_linuxbrew() {
     process.env.GIT_EXEC_PATH = "/tmp/usr/libexec/git-core";
     process.env.GIT_SSH_COMMAND = "/var/task/bin/ssh -T -i /tmp/.ssh/id_rsa -o StrictHostKeyChecking=no";
     process.env.GIT_TEMPLATE_DIR = "/tmp/usr/share/git-core/templates";
-    process.env.HOME = "/tmp";
+    process.env.HOME = "/tmp/test-bot";
     process.env.LD_LIBRARY_PATH = "/tmp/usr/lib64";
     process.env.PATH = "/tmp/usr/bin:/var/task/bin:" + process.env.PATH;
-    process.chdir("/tmp");
+
+    if (fs.existsSync('/tmp/test-bot'))
+        spawn('rm', ['-r', '/tmp/test-bot']);
+    fs.mkdirSync('/tmp/test-bot');
+    process.chdir('/tmp/test-bot');
+
     if (fs.existsSync('/tmp/brew'))
         return;
     spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
