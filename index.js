@@ -65,8 +65,10 @@ function processEvent(event, context, callback) {
             process.env.HOMEBREW_NO_ANALYTICS = "1";
             process.env.HOMEBREW_NO_AUTO_UPDATE = "1";
             process.env.HOMEBREW_VERBOSE = "1";
+            spawn("/tmp/brew/bin/brew", ["update"]);
             const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
             done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr]));
+            spawn("/tmp/brew/bin/brew", ["update"]);
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
