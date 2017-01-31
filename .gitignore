@@ -8,6 +8,7 @@ lib
 linuxbrew-lambda.test.output.json
 linuxbrew-lambda.zip
 linuxbrew-lambda.zip.json
+node_modules
 openssh-7.4p1
 openssh-7.4p1.tar.gz
 ruby-stamp
