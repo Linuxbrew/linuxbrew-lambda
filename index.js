@@ -71,7 +71,11 @@ function processEvent(event, context, callback) {
     const q = event.queryStringParameters;
     switch (event.httpMethod) {
         case 'GET':
-            return brew_config();
+            if (event.pathParameters != null)
+                brew_pull_circle("https://" + event.pathParameters.url);
+            else
+                brew_config();
+            break;
         case 'POST':
             const body = JSON.parse(event.body);
             const pr_url = body.payload.pull_requests[0].url;
