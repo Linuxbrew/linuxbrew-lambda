@@ -50,25 +50,32 @@ function processEvent(event, context, callback) {
         },
     });
 
+    const brew_config = () => {
+        install_linuxbrew();
+        done(null, spawn("/tmp/brew/bin/brew", ["config"]));
+    }
+
+    const brew_pull_circle = (pr_url) => {
+        console.log("Pull request URL: " + pr_url);
+        install_linuxbrew();
+        process.env.HOMEBREW_DEVELOPER = "1";
+        process.env.HOMEBREW_NO_ANALYTICS = "1";
+        process.env.HOMEBREW_NO_AUTO_UPDATE = "1";
+        process.env.HOMEBREW_VERBOSE = "1";
+        spawn("/tmp/brew/bin/brew", ["update"]);
+        const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
+        done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr_url]));
+        spawn("/tmp/brew/bin/brew", ["update"]);
+    }
+
     const q = event.queryStringParameters;
     switch (event.httpMethod) {
         case 'GET':
-            install_linuxbrew();
-            done(null, spawn("/tmp/brew/bin/brew", ["config"]));
-            break;
+            return brew_config();
         case 'POST':
             const body = JSON.parse(event.body);
-            const pr = body.payload.pull_requests[0].url;
-            console.log("Pull request URL: " + pr);
-            install_linuxbrew();
-            process.env.HOMEBREW_DEVELOPER = "1";
-            process.env.HOMEBREW_NO_ANALYTICS = "1";
-            process.env.HOMEBREW_NO_AUTO_UPDATE = "1";
-            process.env.HOMEBREW_VERBOSE = "1";
-            spawn("/tmp/brew/bin/brew", ["update"]);
-            const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
-            done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr]));
-            spawn("/tmp/brew/bin/brew", ["update"]);
+            const pr_url = body.payload.pull_requests[0].url;
+            brew_pull_circle(pr_url);
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));
