@@ -1,6 +1,11 @@
 all: linuxbrew-lambda.zip
 
+clean:
+	rm -rf brew-stamp ruby-stamp git-2.4.3.tar brew bin bin.real info lib
+
 deploy: linuxbrew-lambda.zip.json
+
+.PHONY: all clean deploy
 
 git-2.4.3.tar:
 	curl -O https://raw.githubusercontent.com/lambci/lambci/master/vendor/git-2.4.3.tar
