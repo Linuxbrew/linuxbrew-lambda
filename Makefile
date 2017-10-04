@@ -30,6 +30,7 @@ ruby-stamp: traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
 	touch $@
 
 linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib
+	rm -f $@
 	zip -qr $@ $^
 
 linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
