@@ -87,19 +87,19 @@ function processEvent(event, context, callback) {
 };
 
 exports.handler = (event, context, callback) => {
-    if ('BINTRAY_KEY' in process.env)
+    if ('HOMEBREW_BINTRAY_KEY' in process.env)
         return processEvent(event, context, callback);
     const kms = new AWS.KMS();
-    kms.decrypt({ CiphertextBlob: new Buffer(process.env.BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
+    kms.decrypt({ CiphertextBlob: new Buffer(process.env.HOMEBREW_BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
         if (err) {
             console.log('Decrypt error:', err);
             return callback(err);
         }
-        process.env.BINTRAY_KEY = data.Plaintext.toString('ascii');
+        process.env.HOMEBREW_BINTRAY_KEY = data.Plaintext.toString('ascii');
 
         if (fs.existsSync('/tmp/.ssh/id_rsa'))
             return processEvent(event, context, callback);
-        kms.decrypt({ CiphertextBlob: new Buffer(process.env.ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
+        kms.decrypt({ CiphertextBlob: new Buffer(process.env.HOMEBREW_ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
             if (err) {
                 console.log('Decrypt error:', err);
                 return callback(err);
