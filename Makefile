@@ -1,7 +1,7 @@
 all: linuxbrew-lambda.zip
 
 clean:
-	rm -rf brew-stamp ruby-stamp git-2.4.3.tar brew bin bin.real info lib
+	rm -rf brew-stamp ruby-stamp git-2.4.3.tar brew bin info lib
 
 deploy: linuxbrew-lambda.zip.json
 
@@ -11,8 +11,8 @@ git-2.4.3.tar:
 	curl -O https://raw.githubusercontent.com/lambci/lambci/master/vendor/git-2.4.3.tar
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
 
-traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz:
-	curl -O http://d6r77u77i8pq3.cloudfront.net/releases/traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
+portable-ruby-2.3.3.x86_64_linux.bottle.1.tar.gz:
+	curl -Lo $@ https://homebrew.bintray.com/bottles-portable/portable-ruby-2.3.3.x86_64_linux.bottle.1.tar.gz
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
 
 brew-stamp:
@@ -25,13 +25,18 @@ brew-stamp:
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-bio brew/Library/Taps/linuxbrew/homebrew-bio
 	touch $@
 
-ruby-stamp: traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
-	tar xf $<
+ruby-stamp: portable-ruby-2.3.3.x86_64_linux.bottle.1.tar.gz
+	tar -C brew/Library/Homebrew/vendor -xf $<
+	ln -s 2.3.3 brew/Library/Homebrew/vendor/portable-ruby/current
+	chmod u+w brew/Library/Homebrew/vendor/portable-ruby/current/bin/ruby
+	strip brew/Library/Homebrew/vendor/portable-ruby/current/bin/ruby
+	chmod u-w brew/Library/Homebrew/vendor/portable-ruby/current/bin/ruby
+	rm -f brew/Library/Homebrew/vendor/portable-ruby/current/lib/libruby-static.a
 	touch $@
 
-linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar index.js brew bin bin.real info lib
+linuxbrew-lambda.zip: brew-stamp ruby-stamp git-2.4.3.tar
 	rm -f $@
-	zip -qr $@ $^
+	zip -qr $@ git-2.4.3.tar index.js bin brew
 
 linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
 	aws lambda update-function-code --function-name LinuxbrewTestBot --zip-file fileb://$< >$@
