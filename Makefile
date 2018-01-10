@@ -22,7 +22,7 @@ brew-stamp:
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-core brew/Library/Taps/homebrew/homebrew-core
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-extra brew/Library/Taps/linuxbrew/homebrew-extra
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-xorg brew/Library/Taps/linuxbrew/homebrew-xorg
-	git clone --depth=50 https://github.com/Linuxbrew/homebrew-bio brew/Library/Taps/linuxbrew/homebrew-bio
+	git clone --depth=50 https://github.com/brewsci/homebrew-bio brew/Library/Taps/brewsci/homebrew-bio
 	touch $@
 
 ruby-stamp: traveling-ruby-20150715-2.2.2-linux-x86_64.tar.gz
