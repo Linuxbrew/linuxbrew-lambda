@@ -64,7 +64,9 @@ function processEvent(event, context, callback) {
         process.env.HOMEBREW_VERBOSE = "1";
         spawn("/tmp/brew/bin/brew", ["update"]);
         const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
-        done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr_url]));
+        done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload",
+            "--bintray-org=linuxbrew", "--git-name=LinuxbrewTestBot", "--git-email=testbot@linuxbrew.sh",
+            keep_old, pr_url]));
         spawn("/tmp/brew/bin/brew", ["update"]);
     }
 
