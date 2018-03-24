@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Linuxbrew test-bot</title>
+</head>
+<body style="background-color:#eeeeee;">
+
+<h1 style="text-align:center">bot.linuxbrew.sh</h1>
+
+<div style="width:50%;margin:auto;">
+<p>Trigger <a href="http://bot.linuxbrew.sh">bot.linuxbrew.sh</a> to download bottles from CircleCI and transfer them to Bintray. It runs on AWS Lambda. See its code on <a href="https://github.com/linuxbrew/linuxbrew-lambda">GitHub</a>.</p>
+
+<script>
+function trigger()
+{
+	var keepold = document.getElementById("keep-old").checked ? "?keep-old=1" : "";
+	location.href = "http://bot.linuxbrew.sh/ci-upload/github.com/"
+		+ document.getElementById("tap").value
+		+ "/pull/"
+		+ document.getElementById("pr").value
+		+ keepold;
+	return false;
+}
+</script>
+
+<form onSubmit="return trigger();">
+<select id="tap" name="tap">
+  <option value="brewsci/homebrew-bio">Brewsci/bio</option>
+  <option value="linuxbrew/homebrew-core">Linuxbrew/core</option>
+  <option value="linuxbrew/homebrew-extra">Linuxbrew/extra</option>
+  <option value="linuxbrew/homebrew-xorg">Linuxbrew/xorg</option>
+</select>
+<br>PR <input id="pr" type="number" name="pr">
+<br><input id="keep-old" type="checkbox" name="keep-old" value="1"> Keep-old
+<br><input type="submit" value="Trigger">
+</form>
+<div>
+
+</body>
+</html>
