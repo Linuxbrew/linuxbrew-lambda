@@ -44,9 +44,9 @@ function processEvent(event, context, callback) {
 
     const done = (err, res) => callback(null, {
         statusCode: err ? '400' : '200',
-        body: err ? err.message : JSON.stringify(res),
+        body: err ? err.message : res,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain',
         },
     });
 
