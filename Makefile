@@ -22,6 +22,7 @@ brew-stamp:
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-core brew/Library/Taps/homebrew/homebrew-core
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-extra brew/Library/Taps/linuxbrew/homebrew-extra
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-xorg brew/Library/Taps/linuxbrew/homebrew-xorg
+	git clone --depth=50 https://github.com/brewsci/homebrew-base brew/Library/Taps/brewsci/homebrew-base
 	git clone --depth=50 https://github.com/brewsci/homebrew-bio brew/Library/Taps/brewsci/homebrew-bio
 	touch $@
 
