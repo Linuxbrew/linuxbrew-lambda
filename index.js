@@ -32,7 +32,7 @@ function install_linuxbrew() {
     if (fs.existsSync('/tmp/brew'))
         return;
     spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
-    spawn("ln", ["-s", "2.3.3_2", "/tmp/brew/Library/Homebrew/vendor/portable-ruby/current"]);
+    spawn("ln", ["-s", "2.3.7", "/tmp/brew/Library/Homebrew/vendor/portable-ruby/current"]);
     spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
     spawn("/tmp/brew/bin/brew", ["update"]);
 }
