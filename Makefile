@@ -27,7 +27,7 @@ brew-stamp:
 	touch $@
 
 # Also modify index.js when increasing this version number.
-RUBY_VERSION=2.3.3_2
+RUBY_VERSION=2.3.7
 ruby-stamp: portable-ruby-$(RUBY_VERSION).x86_64_linux.bottle.tar.gz
 	tar -C brew/Library/Homebrew/vendor -xf $<
 	chmod u+w brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
