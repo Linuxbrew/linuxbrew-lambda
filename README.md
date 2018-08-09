@@ -39,3 +39,19 @@ Linuxbrew glibc: N/A
 Linuxbrew gcc: N/A
 Linuxbrew xorg: N/A
 ```
+
+# Troubleshooting using Docker
+
+The Docker image [`lambci/lambda`](https://github.com/lambci/docker-lambda) is useful for troubleshooting this tool.
+
+## Execute a GET request
+
+```sh
+docker run --rm -v "$PWD":/var/task lambci/lambda:nodejs4.3 'index.handler' '{ "httpMethod": "GET" }'
+```
+
+## An interactive prompt
+
+```sh
+docker run -it --rm -v "$PWD":/var/task --entrypoint /bin/bash lambci/lambda:nodejs4.3
+```
