@@ -41,7 +41,6 @@ function install_linuxbrew() {
     spawn("cp", ["-a", "/var/task/brew", "/tmp/"]);
     spawn("ln", ["-s", "2.3.7", "/tmp/brew/Library/Homebrew/vendor/portable-ruby/current"]);
     spawn("tar", ["xf", "/var/task/git-2.4.3.tar", "-C", "/tmp"]);
-    spawn("/tmp/brew/bin/brew", ["update"]);
 }
 
 /**
@@ -67,7 +66,6 @@ function processEvent(event, context, callback) {
     const brew_pull_circle = (pr_url) => {
         console.log("Pull request URL: " + pr_url);
         install_linuxbrew();
-        spawn("/tmp/brew/bin/brew", ["update"]);
         const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
         done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr_url]));
         spawn("/tmp/brew/bin/brew", ["update"]);
