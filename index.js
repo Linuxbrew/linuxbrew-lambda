@@ -5,6 +5,7 @@ const fs = require('fs');
 const spawnSync = require("child_process").spawnSync;
 
 function spawn(command, args) {
+    console.log("Running:", command, args);
     const output = spawnSync(command,
         args.filter(function(x) { return x != null }));
     if (output.error != null) {
@@ -12,7 +13,7 @@ function spawn(command, args) {
         return output.error.toString();
     }
     const s = output.stdout.toString() + output.stderr.toString();
-    console.log(command, args, s);
+    console.log(s);
     return s;
 }
 
@@ -58,6 +59,7 @@ function processEvent(event, context, callback) {
     });
 
     const brew_config = () => {
+        console.log("Reporting: brew config");
         install_linuxbrew();
         done(null, spawn("/tmp/brew/bin/brew", ["config"]));
     }
