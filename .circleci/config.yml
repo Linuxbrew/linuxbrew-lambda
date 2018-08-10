@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:xenial
+    steps:
+      - checkout
+      - run: make
+      - setup_remote_docker
+      - run: docker build -t linuxbrew/linuxbrew-lambda .
+      - run: docker run linuxbrew/linuxbrew-lambda index.handler '{ "httpMethod": "GET" }'
