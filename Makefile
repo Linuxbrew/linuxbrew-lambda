@@ -31,7 +31,7 @@ RUBY_VERSION=2.3.7
 ruby-stamp: portable-ruby-$(RUBY_VERSION).x86_64_linux.bottle.tar.gz
 	tar -C brew/Library/Homebrew/vendor -xf $<
 	chmod u+w brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
-	gstrip brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
+	gstrip brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby || strip brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
 	chmod u-w brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
 	rm -f brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/lib/libruby-static.a
 	touch $@
