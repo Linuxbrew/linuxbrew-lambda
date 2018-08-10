@@ -92,6 +92,10 @@ function processEvent(event, context, callback) {
 exports.handler = (event, context, callback) => {
     if ('HOMEBREW_BINTRAY_KEY' in process.env)
         return processEvent(event, context, callback);
+    if (!('HOMEBREW_BINTRAY_KEY_ENCRYPTED' in process.env)) {
+        console.log('Warning: Missing HOMEBREW_BINTRAY_KEY_ENCRYPTED');
+        return processEvent(event, context, callback);
+    }
     const kms = new AWS.KMS();
     kms.decrypt({ CiphertextBlob: new Buffer(process.env.HOMEBREW_BINTRAY_KEY_ENCRYPTED, 'base64') }, (err, data) => {
         if (err) {
