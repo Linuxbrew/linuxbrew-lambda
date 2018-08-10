@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:xenial
+    steps:
+      - run: apt-get update && apt-get install -y binutils curl docker.io git make zip
+      - checkout
+      - run: make
+      - setup_remote_docker
+      - run: |
+          docker build -t linuxbrew/linuxbrew-lambda .
+      - run: |
+          docker run linuxbrew/linuxbrew-lambda index.handler '{ "httpMethod": "GET" }'
