@@ -24,6 +24,7 @@ brew-stamp:
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-xorg brew/Library/Taps/linuxbrew/homebrew-xorg
 	git clone --depth=50 https://github.com/brewsci/homebrew-base brew/Library/Taps/brewsci/homebrew-base
 	git clone --depth=50 https://github.com/brewsci/homebrew-bio brew/Library/Taps/brewsci/homebrew-bio
+	git clone --depth=50 https://github.com/brewsci/homebrew-num brew/Library/Taps/brewsci/homebrew-num
 	touch $@
 
 # Also modify index.js when increasing this version number.
