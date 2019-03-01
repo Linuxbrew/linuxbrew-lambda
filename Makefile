@@ -16,10 +16,10 @@ portable-ruby-%.x86_64_linux.bottle.tar.gz: portable-ruby-%.x86_64_linux.bottle.
 	gsha256sum -c $< || sha256sum -c $<
 
 brew-stamp:
-	git clone --depth=1 https://github.com/Linuxbrew/brew
+	git clone --depth=1 https://github.com/Homebrew/brew
+	git clone --depth=1 https://github.com/Homebrew/homebrew-test-bot brew/Library/Taps/homebrew/homebrew-test-bot
 	git clone --depth=1 https://github.com/Linuxbrew/homebrew-developer brew/Library/Taps/linuxbrew/homebrew-developer
-	git clone --depth=1 https://github.com/Linuxbrew/homebrew-test-bot brew/Library/Taps/linuxbrew/homebrew-test-bot
-	git clone --depth=50 https://github.com/Linuxbrew/homebrew-core brew/Library/Taps/homebrew/homebrew-core
+	git clone --depth=50 https://github.com/Homebrew/linuxbrew-core brew/Library/Taps/homebrew/homebrew-core
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-extra brew/Library/Taps/linuxbrew/homebrew-extra
 	git clone --depth=50 https://github.com/Linuxbrew/homebrew-xorg brew/Library/Taps/linuxbrew/homebrew-xorg
 	git clone --depth=50 https://github.com/brewsci/homebrew-base brew/Library/Taps/brewsci/homebrew-base
