@@ -8,7 +8,7 @@ deploy: linuxbrew-lambda.zip.json
 .PHONY: all clean deploy
 
 git-2.4.3.tar:
-	curl -fO https://raw.githubusercontent.com/lambci/lambci/master/vendor/git-2.4.3.tar
+	curl -fO https://raw.githubusercontent.com/lambci/lambci/v0.9.14/vendor/git-2.4.3.tar
 	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
 
 portable-ruby-%.x86_64_linux.bottle.tar.gz: portable-ruby-%.x86_64_linux.bottle.tar.gz.sha256
