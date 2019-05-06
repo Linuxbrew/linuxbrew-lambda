@@ -7,13 +7,13 @@ deploy: linuxbrew-lambda.zip.json
 
 .PHONY: all clean deploy
 
-git-2.4.3.tar:
+git-2.4.3.tar: git-2.4.3.tar.sha256
 	curl -fO https://raw.githubusercontent.com/lambci/lambci/v0.9.14/vendor/git-2.4.3.tar
-	gsha256sum -c $@.sha256 || sha256sum -c $@.sha256
+	sha256sum -c $<
 
 portable-ruby-%.x86_64_linux.bottle.tar.gz: portable-ruby-%.x86_64_linux.bottle.tar.gz.sha256
 	curl -fLO https://homebrew.bintray.com/bottles-portable-ruby/$@
-	gsha256sum -c $< || sha256sum -c $<
+	sha256sum -c $<
 
 brew-stamp:
 	git clone --depth=1 https://github.com/Homebrew/brew
