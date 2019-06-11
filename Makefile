@@ -46,3 +46,12 @@ linuxbrew-lambda.zip.json: linuxbrew-lambda.zip
 
 linuxbrew-lambda.test.output.json: linuxbrew-lambda.test.json
 	curl -fd@$< https://p4142ivuwk.execute-api.us-west-2.amazonaws.com/prod/LinuxbrewTestBot?keep-old=1 >$@
+
+%.kms.base64: %
+	aws kms encrypt --key-id alias/LinuxbrewTestBot --plaintext fileb://$< --query CiphertextBlob --output text >$@
+
+%.kms.bin: %.kms.base64
+	base64 --decode $< >$@
+
+%.kms.plain: %.kms.bin
+	aws kms decrypt --ciphertext-blob fileb://$< --query Plaintext --output text | base64 --decode >$@
