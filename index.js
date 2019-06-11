@@ -108,7 +108,7 @@ exports.handler = (event, context, callback) => {
 
         if (fs.existsSync('/tmp/.ssh/id_rsa'))
             return processEvent(event, context, callback);
-        kms.decrypt({ CiphertextBlob: new Buffer(process.env.HOMEBREW_ID_RSA_ENCRYPTED, 'base64') }, (err, data) => {
+        kms.decrypt({ CiphertextBlob: new Buffer(process.env.HOMEBREW_SSH_KEY_ENCRYPTED, 'base64') }, (err, data) => {
             if (err) {
                 console.log('Decrypt error:', err);
                 return callback(err);
