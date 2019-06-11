@@ -68,7 +68,8 @@ function processEvent(event, context, callback) {
         console.log("Pull request URL: " + pr_url);
         install_linuxbrew();
         const keep_old = q != null && 'keep-old' in q && q['keep-old'] != 0 ? "--keep-old" : null;
-        done(null, spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr_url]));
+        spawn("/tmp/brew/bin/brew", ["pull-circle", "--ci-upload", keep_old, pr_url]);
+        done(null, "Done!");
         spawn("/tmp/brew/bin/brew", ["update-reset"]);
     }
 
