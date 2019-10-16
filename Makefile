@@ -6,6 +6,8 @@ clean:
 deploy: linuxbrew-lambda.zip.json
 
 .PHONY: all clean deploy
+.DELETE_ON_ERROR:
+.SECONDARY:
 
 git-2.4.3.tar: git-2.4.3.tar.sha256
 	curl -fO https://raw.githubusercontent.com/lambci/lambci/v0.9.14/vendor/git-2.4.3.tar
