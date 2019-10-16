@@ -14,7 +14,7 @@ git-2.4.3.tar: git-2.4.3.tar.sha256
 	sha256sum -c $<
 
 portable-ruby-%.x86_64_linux.bottle.tar.gz: portable-ruby-%.x86_64_linux.bottle.tar.gz.sha256
-	curl -fLO https://homebrew.bintray.com/bottles-portable-ruby/$@
+	curl -fL -o $@ https://linuxbrew.bintray.com/bottles-portable-ruby/portable-ruby--$*.x86_64_linux.bottle.tar.gz
 	sha256sum -c $<
 
 brew-stamp:
@@ -30,7 +30,7 @@ brew-stamp:
 	touch $@
 
 # Also modify index.js when increasing this version number.
-RUBY_VERSION=2.3.7
+RUBY_VERSION=2.6.3
 ruby-stamp: portable-ruby-$(RUBY_VERSION).x86_64_linux.bottle.tar.gz
 	tar -C brew/Library/Homebrew/vendor -xf $<
 	chmod u+w brew/Library/Homebrew/vendor/portable-ruby/$(RUBY_VERSION)/bin/ruby
